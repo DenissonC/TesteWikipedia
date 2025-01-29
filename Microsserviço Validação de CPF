@@ -1,0 +1,31 @@
+exports.handler = async (event) => {
+  const cpf = event.cpf;
+  const regex = /^(\d{3})(\d{3})(\d{3})(\d{2})$/;
+  if (!regex.test(cpf)) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ erro: "CPF inválido" }),
+    };
+  }
+  const cpfSemMascara = cpf.replace(/[^0-9]/g, "");
+  const soma1 = 0;
+  const soma2 = 0;
+  for (let i = 0; i < 9; i++) {
+    soma1 += parseInt(cpfSemMascara[i]) * (10 - i);
+  }
+  for (let i = 0; i < 10; i++) {
+    soma2 += parseInt(cpfSemMascara[i]) * (11 - i);
+  }
+  const digito1 = (soma1 * 10) % 11;
+  const digito2 = (soma2 * 10) % 11;
+  if (digito1 !== parseInt(cpfSemMascara[9]) || digito2 !== parseInt(cpfSemMascara[10])) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ erro: "CPF inválido" }),
+    };
+  }
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ mensagem: "CPF válido" }),
+  };
+};
